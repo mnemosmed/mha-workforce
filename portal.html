@@ -45,26 +45,6 @@
     header h1 { font-size: 1.2rem; font-weight: 700; }
     header p { font-size: 0.82rem; opacity: 0.88; margin-top: 0.15rem; }
 
-    nav {
-      margin-left: auto;
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.45rem 0.9rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.25);
-      transition: background 0.15s;
-    }
-
-    nav a:hover { background: rgba(255,255,255,0.12); }
-    nav a.active { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.4); }
-
     .container { max-width: 1280px; margin: 0 auto; padding: 1.25rem 1.75rem 2rem; }
 
     .kpi-row {
@@ -277,7 +257,6 @@
 
     @media (max-width: 900px) {
       .kpi-row { grid-template-columns: repeat(2, 1fr); }
-      nav { display: none; }
     }
   </style>
 </head>
@@ -286,12 +265,8 @@
     <img src="assets/mha-logo.png" alt="MHA logo" />
     <div>
       <h1>Workforce Data Portal</h1>
-      <p>Edit facility placements and worker counts</p>
+      <p>Edit facility placements and worker counts (admin only)</p>
     </div>
-    <nav>
-      <a href="/">Dashboard</a>
-      <a href="/portal" class="active">Data Portal</a>
-    </nav>
   </header>
 
   <div class="container">
@@ -583,7 +558,7 @@
     }
 
     async function load() {
-      const res = await fetch("/api/workforce");
+      const res = await fetch("/api/workforce", { credentials: "same-origin" });
       data = await res.json();
       populateRegionSelects();
       updateKpis();
@@ -599,6 +574,7 @@
       try {
         const res = await fetch("/api/workforce", {
           method: "PUT",
+          credentials: "same-origin",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
         });

@@ -2,13 +2,43 @@
 import json
 import os
 from datetime import datetime, timezone
+from functools import wraps
 
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, Response, jsonify, request, send_from_directory
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 WORKFORCE_PATH = os.path.join(ROOT, "data", "workforce.json")
 
 app = Flask(__name__, static_folder=ROOT, static_url_path="")
+
+
+def portal_auth_configured():
+    return bool(os.environ.get("PORTAL_USERNAME") and os.environ.get("PORTAL_PASSWORD"))
+
+
+def portal_authorized():
+    if not portal_auth_configured():
+        return True
+    auth = request.authorization
+    return (
+        auth is not None
+        and auth.username == os.environ["PORTAL_USERNAME"]
+        and auth.password == os.environ["PORTAL_PASSWORD"]
+    )
+
+
+def require_portal_auth(view):
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+        if portal_authorized():
+            return view(*args, **kwargs)
+        return Response(
+            "Admin access required.",
+            401,
+            {"WWW-Authenticate": 'Basic realm="MHA Data Portal"'},
+        )
+
+    return wrapped
 
 
 def load_workforce():
@@ -52,11 +82,13 @@ def validate_workforce(data):
 
 
 @app.get("/api/workforce")
+@require_portal_auth
 def get_workforce():
     return jsonify(load_workforce())
 
 
 @app.put("/api/workforce")
+@require_portal_auth
 def put_workforce():
     try:
         data = validate_workforce(request.get_json(force=True))
@@ -77,6 +109,7 @@ def dashboard():
 
 
 @app.get("/portal")
+@require_portal_auth
 def portal():
     return send_from_directory(ROOT, "portal.html")
 
@@ -92,4 +125,6 @@ if __name__ == "__main__":
     print("MHA Workforce Dashboard")
     print(f"  Dashboard: http://localhost:{port}")
     print(f"  Data portal: http://localhost:{port}/portal")
+    if not portal_auth_configured():
+        print("  Warning: set PORTAL_USERNAME and PORTAL_PASSWORD to protect /portal")
     app.run(host="0.0.0.0", port=port, debug=debug)

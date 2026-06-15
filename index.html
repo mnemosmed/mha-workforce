@@ -80,32 +80,6 @@
         margin-top: 0.2rem;
       }
 
-      nav {
-        margin-left: auto;
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-      }
-
-      nav a {
-        color: #fff;
-        text-decoration: none;
-        font-size: 0.8rem;
-        font-weight: 600;
-        padding: 0.45rem 0.9rem;
-        border-radius: 999px;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        transition: background 0.15s;
-      }
-
-      nav a:hover {
-        background: rgba(255, 255, 255, 0.12);
-      }
-      nav a.active {
-        background: rgba(255, 255, 255, 0.22);
-        border-color: rgba(255, 255, 255, 0.4);
-      }
-
       .kpi-row {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -409,9 +383,6 @@
         main {
           grid-template-columns: 1fr;
         }
-        nav {
-          display: none;
-        }
       }
     </style>
   </head>
@@ -428,10 +399,6 @@
           &amp; Mental Health Nurses &middot; 2026
         </p>
       </div>
-      <nav>
-        <a href="/" class="active">Dashboard</a>
-        <a href="/portal">Data Portal</a>
-      </nav>
     </header>
 
     <section class="kpi-row">
