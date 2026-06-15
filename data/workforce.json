@@ -1,0 +1,372 @@
+{
+  "meta": {
+    "title": "Mental Health Workforce Ghana 2025",
+    "note": "Psychologists from MHA facility mapping; psychiatrist & nurse figures illustrative pending full HR audit.",
+    "totals": {
+      "psychiatrists": 88,
+      "psychologists": 44,
+      "nurses": 108,
+      "all": 240
+    }
+  },
+  "cadres": [
+    {
+      "id": "psychiatrists",
+      "label": "Psychiatrists",
+      "color": "#6b2d8e"
+    },
+    {
+      "id": "psychologists",
+      "label": "Psychologists",
+      "color": "#2e9b4f"
+    },
+    {
+      "id": "nurses",
+      "label": "Mental Health Nurses",
+      "color": "#1a7fa0"
+    }
+  ],
+  "facilities": [
+    {
+      "facility": "Pantang Hospital",
+      "region": "Greater Accra",
+      "district": "La Nkwantanang Madina",
+      "subDistrict": "Pantang",
+      "lat": 5.681,
+      "lng": -0.1667,
+      "psychiatrists": 28,
+      "psychologists": 0,
+      "nurses": 1
+    },
+    {
+      "facility": "Accra Psychiatric Hospital",
+      "region": "Greater Accra",
+      "district": "Accra Metro",
+      "subDistrict": "Asylum Down",
+      "lat": 5.556,
+      "lng": -0.196,
+      "psychiatrists": 22,
+      "psychologists": 0,
+      "nurses": 1
+    },
+    {
+      "facility": "Korle Bu Teaching Hospital — Psychiatric Unit",
+      "region": "Greater Accra",
+      "district": "Accra Metro",
+      "subDistrict": "Korle Bu",
+      "lat": 5.536,
+      "lng": -0.227,
+      "psychiatrists": 12,
+      "psychologists": 0,
+      "nurses": 1
+    },
+    {
+      "region": "Savanna",
+      "district": "West Gonja",
+      "subDistrict": "Larabanga",
+      "facility": "Murugu CHPS",
+      "lat": 9.344465,
+      "lng": -1.708283,
+      "psychologists": 2,
+      "psychiatrists": 0,
+      "nurses": 9
+    },
+    {
+      "region": "Upper West",
+      "district": "WA Municipal",
+      "subDistrict": "Dobile",
+      "facility": "Upper West Regional Hospital",
+      "lat": 10.088075,
+      "lng": -2.520661,
+      "psychologists": 1,
+      "psychiatrists": 1,
+      "nurses": 4
+    },
+    {
+      "region": "Northern",
+      "district": "Temale",
+      "subDistrict": "Teamale Central",
+      "facility": "Northern Regional Hospital",
+      "lat": 9.406017,
+      "lng": -0.836923,
+      "psychologists": 2,
+      "psychiatrists": 3,
+      "nurses": 4
+    },
+    {
+      "region": "Bono",
+      "district": "Domaa West",
+      "subDistrict": "Nkrankwanta",
+      "facility": "Domaa West Hospital",
+      "lat": 7.019738,
+      "lng": -3.052824,
+      "psychologists": 1,
+      "psychiatrists": 0,
+      "nurses": 1
+    },
+    {
+      "region": "Bono",
+      "district": "Sunyani Municipal",
+      "subDistrict": "Penkwase",
+      "facility": "Sunyani Municipal Hospital (Penkwase)",
+      "lat": 7.3349,
+      "lng": -2.3117,
+      "psychologists": 1,
+      "psychiatrists": 1,
+      "nurses": 1
+    },
+    {
+      "region": "Bono East",
+      "district": "Techiman North",
+      "subDistrict": "Ofuman",
+      "facility": "Uofuman Zongo CHPS",
+      "lat": 7.788571,
+      "lng": -1.976531,
+      "psychologists": 1,
+      "psychiatrists": 0,
+      "nurses": 9
+    },
+    {
+      "region": "Ashanti",
+      "district": "Asante Akyem North",
+      "subDistrict": "Agogo",
+      "facility": "Presbytarian Hospital",
+      "lat": 6.796079,
+      "lng": -1.085267,
+      "psychologists": 4,
+      "psychiatrists": 4,
+      "nurses": 1
+    },
+    {
+      "region": "Ashanti",
+      "district": "Asokwa",
+      "subDistrict": "Kumasi South",
+      "facility": "Kumasi South Hospital",
+      "lat": 6.652007,
+      "lng": -1.586363,
+      "psychologists": 1,
+      "psychiatrists": 0,
+      "nurses": 1
+    },
+    {
+      "region": "Ashanti",
+      "district": "Adansi North",
+      "subDistrict": "Dompoase",
+      "facility": "Benito Manni Catholic Hospital",
+      "lat": 6.311478,
+      "lng": -1.532263,
+      "psychologists": 1,
+      "psychiatrists": 0,
+      "nurses": 1
+    },
+    {
+      "region": "Western North",
+      "district": "Aowin",
+      "subDistrict": "Aqui Allah",
+      "facility": "Awuahkrom CHP",
+      "lat": 5.857731,
+      "lng": -2.657201,
+      "psychologists": 1,
+      "psychiatrists": 0,
+      "nurses": 9
+    },
+    {
+      "region": "Western",
+      "district": "Ellembelle",
+      "subDistrict": "New Aiyinase",
+      "facility": "Ananekrom CHPS",
+      "lat": 5.290697,
+      "lng": -2.407948,
+      "psychologists": 1,
+      "psychiatrists": 0,
+      "nurses": 9
+    },
+    {
+      "region": "Central",
+      "district": "Sasin Fosu",
+      "subDistrict": "Fosu",
+      "facility": "Assin Fosu Polyclinic",
+      "lat": 5.699769,
+      "lng": -1.277886,
+      "psychologists": 1,
+      "psychiatrists": 0,
+      "nurses": 1
+    },
+    {
+      "region": "Central",
+      "district": "Agona West",
+      "subDistrict": "Swedro",
+      "facility": "Swedro Government Hospital",
+      "lat": 5.534999,
+      "lng": -0.692669,
+      "psychologists": 2,
+      "psychiatrists": 0,
+      "nurses": 1
+    },
+    {
+      "region": "Central",
+      "district": "Efutu",
+      "subDistrict": "Kojo Beedu North Low Cost",
+      "facility": "Trauma & Specilist Hospital",
+      "lat": 5.371527,
+      "lng": -0.641791,
+      "psychologists": 2,
+      "psychiatrists": 2,
+      "nurses": 1
+    },
+    {
+      "region": "Central",
+      "district": "Awutu Senya East",
+      "subDistrict": "Kasoa Main",
+      "facility": "Mother & Child Hospital",
+      "lat": 5.521688,
+      "lng": -0.450035,
+      "psychologists": 1,
+      "psychiatrists": 0,
+      "nurses": 1
+    },
+    {
+      "region": "Greater Accra",
+      "district": "Shai Osudoku",
+      "subDistrict": "Agomeda",
+      "facility": "St Andwrews Catholic Hospital-Kordiabe",
+      "lat": 5.925268,
+      "lng": 0.017972,
+      "psychologists": 2,
+      "psychiatrists": 0,
+      "nurses": 1
+    },
+    {
+      "region": "Greater Accra",
+      "district": "Ga West",
+      "subDistrict": "Dodowa",
+      "facility": "Shi-Osudoku Hospital",
+      "lat": 5.899515,
+      "lng": -0.091924,
+      "psychologists": 2,
+      "psychiatrists": 2,
+      "nurses": 1
+    },
+    {
+      "region": "Greater Accra",
+      "district": "Ga East",
+      "subDistrict": "Haatso",
+      "facility": "Ga East Municapal Hospital",
+      "lat": 5.673917,
+      "lng": -0.228721,
+      "psychologists": 2,
+      "psychiatrists": 3,
+      "nurses": 1
+    },
+    {
+      "region": "Greater Accra",
+      "district": "Ledzokuku",
+      "subDistrict": "Teshie North",
+      "facility": "LEKMA Hospital",
+      "lat": 5.602372,
+      "lng": -0.119942,
+      "psychologists": 2,
+      "psychiatrists": 4,
+      "nurses": 1
+    },
+    {
+      "region": "Greater Accra",
+      "district": "Tema",
+      "subDistrict": "Tema South",
+      "facility": "Tema General Hosptal",
+      "lat": 5.674546,
+      "lng": -0.023291,
+      "psychologists": 1,
+      "psychiatrists": 2,
+      "nurses": 1
+    },
+    {
+      "region": "Eastern",
+      "district": "Kwabinirem",
+      "subDistrict": "Takyiman",
+      "facility": "Takyiman Health Centre",
+      "lat": 6.215795,
+      "lng": -0.740565,
+      "psychologists": 3,
+      "psychiatrists": 0,
+      "nurses": 1
+    },
+    {
+      "region": "Volta",
+      "district": "New Juaben South",
+      "subDistrict": "Koforidua 2",
+      "facility": "Eastern Regional Hospital",
+      "lat": 6.096963,
+      "lng": 0.25659,
+      "psychologists": 1,
+      "psychiatrists": 2,
+      "nurses": 4
+    },
+    {
+      "region": "Volta",
+      "district": "Hohoe",
+      "subDistrict": "Agumatsa",
+      "facility": "Fodome Helu Health Center",
+      "lat": 7.074348,
+      "lng": 0.507114,
+      "psychologists": 1,
+      "psychiatrists": 0,
+      "nurses": 4
+    },
+    {
+      "region": "Volta",
+      "district": "North Dayi",
+      "subDistrict": "Botoku",
+      "facility": "Botoku Health Centre",
+      "lat": 6.759805,
+      "lng": 0.266926,
+      "psychologists": 1,
+      "psychiatrists": 0,
+      "nurses": 4
+    },
+    {
+      "region": "Volta",
+      "district": "Agortime Ziope",
+      "subDistrict": "Afegame",
+      "facility": "Agbesi CHPS",
+      "lat": 6.543708,
+      "lng": 0.667549,
+      "psychologists": 2,
+      "psychiatrists": 0,
+      "nurses": 9
+    },
+    {
+      "region": "Volta",
+      "district": "Akatsi South",
+      "subDistrict": "Akatsi",
+      "facility": "Atsekpui CHPS",
+      "lat": 6.143705,
+      "lng": 0.793334,
+      "psychologists": 1,
+      "psychiatrists": 0,
+      "nurses": 9
+    },
+    {
+      "region": "Volta",
+      "district": "South Tongu",
+      "subDistrict": "Sogakope",
+      "facility": "Richard Novati Catholic Hospital",
+      "lat": 6.000247,
+      "lng": 0.599885,
+      "psychologists": 2,
+      "psychiatrists": 2,
+      "nurses": 4
+    },
+    {
+      "region": "Volta",
+      "district": "Anlogaa",
+      "subDistrict": "Anyanui",
+      "facility": "Atorkor CHPS",
+      "lat": 5.776337,
+      "lng": 0.821727,
+      "psychologists": 2,
+      "psychiatrists": 0,
+      "nurses": 12
+    }
+  ]
+}

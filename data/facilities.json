@@ -1,0 +1,254 @@
+[
+  {
+    "region": "Savanna",
+    "district": "West Gonja",
+    "subDistrict": "Larabanga",
+    "facility": "Murugu CHPS",
+    "workers": 2,
+    "lng": -1.708283,
+    "lat": 9.344465
+  },
+  {
+    "region": "Upper West",
+    "district": "WA Municipal",
+    "subDistrict": "Dobile",
+    "facility": "Upper West Regional Hospital",
+    "workers": 1,
+    "lng": -2.520661,
+    "lat": 10.088075
+  },
+  {
+    "region": "Northern",
+    "district": "Temale",
+    "subDistrict": "Teamale Central",
+    "facility": "Northern Regional Hospital",
+    "workers": 2,
+    "lng": -0.836923,
+    "lat": 9.406017
+  },
+  {
+    "region": "Bono",
+    "district": "Domaa West",
+    "subDistrict": "Nkrankwanta",
+    "facility": "Domaa West Hospital",
+    "workers": 1,
+    "lng": -3.052824,
+    "lat": 7.019738
+  },
+  {
+    "region": "Bono",
+    "district": "Sunyani Municipal",
+    "subDistrict": "Penkwase",
+    "facility": "Sunyani Municipal Hospital (Penkwase)",
+    "workers": 1,
+    "lng": -2.3117,
+    "lat": 7.3349
+  },
+  {
+    "region": "Bono East",
+    "district": "Techiman North",
+    "subDistrict": "Ofuman",
+    "facility": "Uofuman Zongo CHPS",
+    "workers": 1,
+    "lng": -1.976531,
+    "lat": 7.788571
+  },
+  {
+    "region": "Ashanti",
+    "district": "Asante Akyem North",
+    "subDistrict": "Agogo",
+    "facility": "Presbytarian Hospital",
+    "workers": 4,
+    "lng": -1.085267,
+    "lat": 6.796079
+  },
+  {
+    "region": "Ashanti",
+    "district": "Asokwa",
+    "subDistrict": "Kumasi South",
+    "facility": "Kumasi South Hospital",
+    "workers": 1,
+    "lng": -1.586363,
+    "lat": 6.652007
+  },
+  {
+    "region": "Ashanti",
+    "district": "Adansi North",
+    "subDistrict": "Dompoase",
+    "facility": "Benito Manni Catholic Hospital",
+    "workers": 1,
+    "lng": -1.532263,
+    "lat": 6.311478
+  },
+  {
+    "region": "Western North",
+    "district": "Aowin",
+    "subDistrict": "Aqui Allah",
+    "facility": "Awuahkrom CHP",
+    "workers": 1,
+    "lng": -2.657201,
+    "lat": 5.857731
+  },
+  {
+    "region": "Western",
+    "district": "Ellembelle",
+    "subDistrict": "New Aiyinase",
+    "facility": "Ananekrom CHPS",
+    "workers": 1,
+    "lng": -2.407948,
+    "lat": 5.290697
+  },
+  {
+    "region": "Central",
+    "district": "Sasin Fosu",
+    "subDistrict": "Fosu",
+    "facility": "Assin Fosu Polyclinic",
+    "workers": 1,
+    "lng": -1.277886,
+    "lat": 5.699769
+  },
+  {
+    "region": "Central",
+    "district": "Agona West",
+    "subDistrict": "Swedro",
+    "facility": "Swedro Government Hospital",
+    "workers": 2,
+    "lng": -0.692669,
+    "lat": 5.534999
+  },
+  {
+    "region": "Central",
+    "district": "Efutu",
+    "subDistrict": "Kojo Beedu North Low Cost",
+    "facility": "Trauma & Specilist Hospital",
+    "workers": 2,
+    "lng": -0.641791,
+    "lat": 5.371527
+  },
+  {
+    "region": "Central",
+    "district": "Awutu Senya East",
+    "subDistrict": "Kasoa Main",
+    "facility": "Mother & Child Hospital",
+    "workers": 1,
+    "lng": -0.450035,
+    "lat": 5.521688
+  },
+  {
+    "region": "Greater Accra",
+    "district": "Shai Osudoku",
+    "subDistrict": "Agomeda",
+    "facility": "St Andwrews Catholic Hospital-Kordiabe",
+    "workers": 2,
+    "lng": 0.017972,
+    "lat": 5.925268
+  },
+  {
+    "region": "Greater Accra",
+    "district": "Ga West",
+    "subDistrict": "Dodowa",
+    "facility": "Shi-Osudoku Hospital",
+    "workers": 2,
+    "lng": -0.091924,
+    "lat": 5.899515
+  },
+  {
+    "region": "Greater Accra",
+    "district": "Ga East",
+    "subDistrict": "Haatso",
+    "facility": "Ga East Municapal Hospital",
+    "workers": 2,
+    "lng": -0.228721,
+    "lat": 5.673917
+  },
+  {
+    "region": "Greater Accra",
+    "district": "Ledzokuku",
+    "subDistrict": "Teshie North",
+    "facility": "LEKMA Hospital",
+    "workers": 2,
+    "lng": -0.119942,
+    "lat": 5.602372
+  },
+  {
+    "region": "Greater Accra",
+    "district": "Tema",
+    "subDistrict": "Tema South",
+    "facility": "Tema General Hosptal",
+    "workers": 1,
+    "lng": -0.023291,
+    "lat": 5.674546
+  },
+  {
+    "region": "Eastern",
+    "district": "Kwabinirem",
+    "subDistrict": "Takyiman",
+    "facility": "Takyiman Health Centre",
+    "workers": 3,
+    "lng": -0.740565,
+    "lat": 6.215795
+  },
+  {
+    "region": "Volta",
+    "district": "New Juaben South",
+    "subDistrict": "Koforidua 2",
+    "facility": "Eastern Regional Hospital",
+    "workers": 1,
+    "lng": 0.25659,
+    "lat": 6.096963
+  },
+  {
+    "region": "Volta",
+    "district": "Hohoe",
+    "subDistrict": "Agumatsa",
+    "facility": "Fodome Helu Health Center",
+    "workers": 1,
+    "lng": 0.507114,
+    "lat": 7.074348
+  },
+  {
+    "region": "Volta",
+    "district": "North Dayi",
+    "subDistrict": "Botoku",
+    "facility": "Botoku Health Centre",
+    "workers": 1,
+    "lng": 0.266926,
+    "lat": 6.759805
+  },
+  {
+    "region": "Volta",
+    "district": "Agortime Ziope",
+    "subDistrict": "Afegame",
+    "facility": "Agbesi CHPS",
+    "workers": 2,
+    "lng": 0.667549,
+    "lat": 6.543708
+  },
+  {
+    "region": "Volta",
+    "district": "Akatsi South",
+    "subDistrict": "Akatsi",
+    "facility": "Atsekpui CHPS",
+    "workers": 1,
+    "lng": 0.793334,
+    "lat": 6.143705
+  },
+  {
+    "region": "Volta",
+    "district": "South Tongu",
+    "subDistrict": "Sogakope",
+    "facility": "Richard Novati Catholic Hospital",
+    "workers": 2,
+    "lng": 0.599885,
+    "lat": 6.000247
+  },
+  {
+    "region": "Volta",
+    "district": "Anlogaa",
+    "subDistrict": "Anyanui",
+    "facility": "Atorkor CHPS",
+    "workers": 2,
+    "lng": 0.821727,
+    "lat": 5.776337
+  }
+]

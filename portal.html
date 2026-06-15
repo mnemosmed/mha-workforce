@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MHA Data Portal — Workforce Editor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --mha-purple: #6b2d8e;
+      --mha-purple-dark: #4f1f6a;
+      --mha-green: #2e9b4f;
+      --mha-teal: #1a7fa0;
+      --bg: #f4f1f7;
+      --surface: #fff;
+      --text: #1a1420;
+      --text-muted: #5c5366;
+      --border: #e4dde9;
+      --shadow: 0 4px 24px rgba(79, 31, 106, 0.08);
+      --danger: #c0392b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--mha-purple-dark), var(--mha-purple));
+      color: #fff;
+      padding: 1rem 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 2px 16px rgba(79, 31, 106, 0.25);
+    }
+
+    header img { width: 56px; height: 56px; object-fit: contain; }
+    header h1 { font-size: 1.2rem; font-weight: 700; }
+    header p { font-size: 0.82rem; opacity: 0.88; margin-top: 0.15rem; }
+
+    nav {
+      margin-left: auto;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.25);
+      transition: background 0.15s;
+    }
+
+    nav a:hover { background: rgba(255,255,255,0.12); }
+    nav a.active { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.4); }
+
+    .container { max-width: 1280px; margin: 0 auto; padding: 1.25rem 1.75rem 2rem; }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .kpi-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-top: 0.1rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .toolbar input, .toolbar select {
+      font-family: inherit;
+      font-size: 0.85rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .toolbar input { min-width: 220px; flex: 1; }
+
+    .btn {
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--mha-purple); color: #fff; }
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-danger { background: #fdecea; color: var(--danger); border: 1px solid #f5c6c0; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .status-bar .dirty { color: #b45309; font-weight: 600; }
+    .status-bar .saved { color: var(--mha-green); font-weight: 600; }
+
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    th, td {
+      padding: 0.65rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    th {
+      background: #faf8fc;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tr:hover td { background: #faf8fc; }
+
+    .num { text-align: center; font-weight: 600; }
+    .num.psychiatrists { color: var(--mha-purple); }
+    .num.psychologists { color: var(--mha-green); }
+    .num.nurses { color: var(--mha-teal); }
+
+    .actions { display: flex; gap: 0.35rem; }
+
+    .actions .btn { padding: 0.35rem 0.6rem; font-size: 0.75rem; }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 20, 32, 0.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .modal-body {
+      padding: 1.25rem;
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .field input, .field select {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.88rem;
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+    .modal-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      background: #faf8fc;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--mha-purple-dark);
+      color: #fff;
+      padding: 0.75rem 1.1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s;
+      z-index: 300;
+      pointer-events: none;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: var(--danger); }
+
+    @media (max-width: 900px) {
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+      nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="assets/mha-logo.png" alt="MHA logo" />
+    <div>
+      <h1>Workforce Data Portal</h1>
+      <p>Edit facility placements and worker counts</p>
+    </div>
+    <nav>
+      <a href="/">Dashboard</a>
+      <a href="/portal" class="active">Data Portal</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <section class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-label">Total Workforce</div>
+        <div class="kpi-value" style="color:var(--mha-purple)" id="kpi-total">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Psychiatrists</div>
+        <div class="kpi-value" style="color:var(--mha-purple)" id="kpi-psychiatrists">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Psychologists</div>
+        <div class="kpi-value" style="color:var(--mha-green)" id="kpi-psychologists">—</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Mental Health Nurses</div>
+        <div class="kpi-value" style="color:var(--mha-teal)" id="kpi-nurses">—</div>
+      </div>
+    </section>
+
+    <div class="status-bar">
+      <span id="status-text">Loading…</span>
+      <span id="updated-at"></span>
+    </div>
+
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Search facility, district, or region…" />
+      <select id="region-filter">
+        <option value="">All regions</option>
+      </select>
+      <button class="btn btn-secondary" id="btn-add">+ Add facility</button>
+      <button class="btn btn-primary" id="btn-save" disabled>Save changes</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Facility</th>
+            <th>Region</th>
+            <th>District</th>
+            <th class="num">Psychiatrists</th>
+            <th class="num">Psychologists</th>
+            <th class="num">Nurses</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header" id="modal-title">Edit facility</div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="f-facility">Facility name</label>
+          <input id="f-facility" required />
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-region">Region</label>
+            <select id="f-region" required></select>
+          </div>
+          <div class="field">
+            <label for="f-district">District</label>
+            <input id="f-district" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-sub">Sub-district</label>
+          <input id="f-sub" />
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-lat">Latitude</label>
+            <input id="f-lat" type="number" step="any" />
+          </div>
+          <div class="field">
+            <label for="f-lng">Longitude</label>
+            <input id="f-lng" type="number" step="any" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-psychiatrists">Psychiatrists</label>
+            <input id="f-psychiatrists" type="number" min="0" value="0" />
+          </div>
+          <div class="field">
+            <label for="f-psychologists">Psychologists</label>
+            <input id="f-psychologists" type="number" min="0" value="0" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-nurses">Mental health nurses</label>
+          <input id="f-nurses" type="number" min="0" value="0" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-cancel">Cancel</button>
+        <button class="btn btn-primary" id="btn-confirm">Save facility</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const REGIONS = [
+      "Greater Accra", "Ashanti", "Central", "Eastern", "Volta", "Western",
+      "Western North", "Northern", "Savanna", "Upper East", "Upper West",
+      "Bono", "Bono East", "Ahafo", "Oti", "North East",
+    ];
+
+    let data = null;
+    let dirty = false;
+    let editIndex = null;
+
+    const els = {
+      table: document.getElementById("table-body"),
+      search: document.getElementById("search"),
+      regionFilter: document.getElementById("region-filter"),
+      save: document.getElementById("btn-save"),
+      add: document.getElementById("btn-add"),
+      status: document.getElementById("status-text"),
+      updated: document.getElementById("updated-at"),
+      modal: document.getElementById("modal"),
+      toast: document.getElementById("toast"),
+    };
+
+    function totals() {
+      const t = { psychiatrists: 0, psychologists: 0, nurses: 0 };
+      data.facilities.forEach(f => {
+        t.psychiatrists += f.psychiatrists || 0;
+        t.psychologists += f.psychologists || 0;
+        t.nurses += f.nurses || 0;
+      });
+      t.all = t.psychiatrists + t.psychologists + t.nurses;
+      return t;
+    }
+
+    function updateKpis() {
+      const t = totals();
+      document.getElementById("kpi-total").textContent = t.all;
+      document.getElementById("kpi-psychiatrists").textContent = t.psychiatrists;
+      document.getElementById("kpi-psychologists").textContent = t.psychologists;
+      document.getElementById("kpi-nurses").textContent = t.nurses;
+    }
+
+    function setDirty(value) {
+      dirty = value;
+      els.save.disabled = !dirty;
+      els.status.textContent = dirty ? "Unsaved changes" : "All changes saved";
+      els.status.className = dirty ? "dirty" : "saved";
+    }
+
+    function toast(msg, isError = false) {
+      els.toast.textContent = msg;
+      els.toast.className = "toast show" + (isError ? " error" : "");
+      setTimeout(() => els.toast.classList.remove("show"), 3000);
+    }
+
+    function filteredFacilities() {
+      const q = els.search.value.trim().toLowerCase();
+      const region = els.regionFilter.value;
+      return data.facilities
+        .map((f, i) => ({ ...f, _index: i }))
+        .filter(f => {
+          if (region && f.region !== region) return false;
+          if (!q) return true;
+          const hay = [f.facility, f.region, f.district, f.subDistrict].join(" ").toLowerCase();
+          return hay.includes(q);
+        });
+    }
+
+    function renderTable() {
+      const rows = filteredFacilities();
+      els.table.innerHTML = rows.length
+        ? rows.map(f => `
+          <tr>
+            <td><strong>${esc(f.facility)}</strong></td>
+            <td>${esc(f.region)}</td>
+            <td>${esc(f.district || "—")}</td>
+            <td class="num psychiatrists">${f.psychiatrists || 0}</td>
+            <td class="num psychologists">${f.psychologists || 0}</td>
+            <td class="num nurses">${f.nurses || 0}</td>
+            <td>
+              <div class="actions">
+                <button class="btn btn-secondary" data-edit="${f._index}">Edit</button>
+                <button class="btn btn-danger" data-delete="${f._index}">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `).join("")
+        : `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--text-muted)">No facilities match your search.</td></tr>`;
+
+      els.table.querySelectorAll("[data-edit]").forEach(btn =>
+        btn.addEventListener("click", () => openModal(+btn.dataset.edit))
+      );
+      els.table.querySelectorAll("[data-delete]").forEach(btn =>
+        btn.addEventListener("click", () => deleteFacility(+btn.dataset.delete))
+      );
+    }
+
+    function esc(s) {
+      const d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function populateRegionSelects() {
+      [els.regionFilter, document.getElementById("f-region")].forEach(select => {
+        const isFilter = select === els.regionFilter;
+        select.innerHTML = (isFilter ? '<option value="">All regions</option>' : "") +
+          REGIONS.map(r => `<option value="${r}">${r}</option>`).join("");
+      });
+    }
+
+    function openModal(index = null) {
+      editIndex = index;
+      document.getElementById("modal-title").textContent =
+        index === null ? "Add facility" : "Edit facility";
+
+      const f = index === null
+        ? { facility: "", region: "Greater Accra", district: "", subDistrict: "", lat: "", lng: "", psychiatrists: 0, psychologists: 0, nurses: 0 }
+        : data.facilities[index];
+
+      document.getElementById("f-facility").value = f.facility || "";
+      document.getElementById("f-region").value = f.region || "Greater Accra";
+      document.getElementById("f-district").value = f.district || "";
+      document.getElementById("f-sub").value = f.subDistrict || "";
+      document.getElementById("f-lat").value = f.lat ?? "";
+      document.getElementById("f-lng").value = f.lng ?? "";
+      document.getElementById("f-psychiatrists").value = f.psychiatrists || 0;
+      document.getElementById("f-psychologists").value = f.psychologists || 0;
+      document.getElementById("f-nurses").value = f.nurses || 0;
+
+      els.modal.classList.add("open");
+    }
+
+    function closeModal() {
+      els.modal.classList.remove("open");
+      editIndex = null;
+    }
+
+    function readForm() {
+      const lat = document.getElementById("f-lat").value;
+      const lng = document.getElementById("f-lng").value;
+      return {
+        facility: document.getElementById("f-facility").value.trim(),
+        region: document.getElementById("f-region").value,
+        district: document.getElementById("f-district").value.trim(),
+        subDistrict: document.getElementById("f-sub").value.trim(),
+        lat: lat === "" ? null : parseFloat(lat),
+        lng: lng === "" ? null : parseFloat(lng),
+        psychiatrists: parseInt(document.getElementById("f-psychiatrists").value, 10) || 0,
+        psychologists: parseInt(document.getElementById("f-psychologists").value, 10) || 0,
+        nurses: parseInt(document.getElementById("f-nurses").value, 10) || 0,
+      };
+    }
+
+    function confirmFacility() {
+      const f = readForm();
+      if (!f.facility) {
+        toast("Facility name is required", true);
+        return;
+      }
+      if (editIndex === null) data.facilities.push(f);
+      else data.facilities[editIndex] = f;
+
+      setDirty(true);
+      updateKpis();
+      renderTable();
+      closeModal();
+      toast(editIndex === null ? "Facility added — remember to save" : "Facility updated — remember to save");
+    }
+
+    function deleteFacility(index) {
+      const name = data.facilities[index].facility;
+      if (!confirm(`Delete "${name}"?`)) return;
+      data.facilities.splice(index, 1);
+      setDirty(true);
+      updateKpis();
+      renderTable();
+      toast("Facility removed — remember to save");
+    }
+
+    async function load() {
+      const res = await fetch("/api/workforce");
+      data = await res.json();
+      populateRegionSelects();
+      updateKpis();
+      renderTable();
+      setDirty(false);
+      if (data.meta.updatedAt) {
+        els.updated.textContent = "Last saved: " + new Date(data.meta.updatedAt).toLocaleString();
+      }
+    }
+
+    async function save() {
+      els.save.disabled = true;
+      try {
+        const res = await fetch("/api/workforce", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const result = await res.json();
+        if (!result.ok) throw new Error(result.error || "Save failed");
+        data = result.data;
+        setDirty(false);
+        updateKpis();
+        if (data.meta.updatedAt) {
+          els.updated.textContent = "Last saved: " + new Date(data.meta.updatedAt).toLocaleString();
+        }
+        toast("Changes saved successfully");
+      } catch (err) {
+        toast(err.message, true);
+        els.save.disabled = false;
+      }
+    }
+
+    els.search.addEventListener("input", renderTable);
+    els.regionFilter.addEventListener("change", renderTable);
+    els.add.addEventListener("click", () => openModal());
+    els.save.addEventListener("click", save);
+    document.getElementById("btn-cancel").addEventListener("click", closeModal);
+    document.getElementById("btn-confirm").addEventListener("click", confirmFacility);
+    els.modal.addEventListener("click", e => { if (e.target === els.modal) closeModal(); });
+
+    window.addEventListener("beforeunload", e => {
+      if (dirty) { e.preventDefault(); e.returnValue = ""; }
+    });
+
+    load().catch(() => toast("Could not load data. Start the server with: python server.py", true));
+  </script>
+</body>
+</html>

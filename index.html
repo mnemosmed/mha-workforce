@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MHA Workforce Dashboard — Mental Health Workforce Ghana 2026</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --mha-purple: #6b2d8e;
+        --mha-purple-dark: #4f1f6a;
+        --mha-purple-light: #9b59c4;
+        --mha-green: #2e9b4f;
+        --mha-teal: #1a7fa0;
+        --bg: #f4f1f7;
+        --surface: #ffffff;
+        --text: #1a1420;
+        --text-muted: #5c5366;
+        --border: #e4dde9;
+        --shadow: 0 4px 24px rgba(79, 31, 106, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "DM Sans", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background: linear-gradient(
+          135deg,
+          var(--mha-purple-dark) 0%,
+          var(--mha-purple) 55%,
+          #7a3a9e 100%
+        );
+        color: #fff;
+        padding: 1rem 1.75rem;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        box-shadow: 0 2px 16px rgba(79, 31, 106, 0.25);
+        z-index: 1000;
+      }
+
+      header img {
+        width: 72px;
+        height: 72px;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+      }
+
+      .header-text h1 {
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .header-text p {
+        font-size: 0.875rem;
+        opacity: 0.88;
+        margin-top: 0.2rem;
+      }
+
+      nav {
+        margin-left: auto;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.45rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        transition: background 0.15s;
+      }
+
+      nav a:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+      nav a.active {
+        background: rgba(255, 255, 255, 0.22);
+        border-color: rgba(255, 255, 255, 0.4);
+      }
+
+      .kpi-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        padding: 1rem 1.75rem 0;
+      }
+
+      .kpi {
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 1rem 1.15rem;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .kpi-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 600;
+      }
+
+      .kpi-value {
+        font-size: 1.85rem;
+        font-weight: 700;
+        margin-top: 0.15rem;
+        line-height: 1.1;
+      }
+
+      .kpi-value.total {
+        color: var(--mha-purple);
+      }
+      .kpi-value.psychiatrists {
+        color: var(--mha-purple);
+      }
+      .kpi-value.psychologists {
+        color: var(--mha-green);
+      }
+      .kpi-value.nurses {
+        color: var(--mha-teal);
+      }
+
+      .kpi-sub {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        margin-top: 0.2rem;
+      }
+
+      main {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 1rem;
+        padding: 1rem 1.75rem 1.75rem;
+        min-height: 0;
+      }
+
+      .map-panel {
+        background: var(--surface);
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 520px;
+      }
+
+      .map-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border);
+        background: #faf8fc;
+      }
+
+      .map-toolbar h2 {
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .cadre-filters {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+      }
+
+      .cadre-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        border: 1.5px solid var(--border);
+        background: #fff;
+        border-radius: 999px;
+        padding: 0.3rem 0.65rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        color: var(--text-muted);
+        transition: all 0.15s;
+      }
+
+      .cadre-btn .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+      }
+
+      .cadre-btn.active {
+        color: var(--text);
+        border-color: transparent;
+        box-shadow: var(--shadow);
+      }
+
+      .cadre-btn:not(.active) {
+        opacity: 0.45;
+      }
+
+      .legend {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.72rem;
+        color: var(--text-muted);
+      }
+
+      .legend-bar {
+        width: 90px;
+        height: 8px;
+        border-radius: 4px;
+        background: linear-gradient(
+          90deg,
+          #ede4f3 0%,
+          var(--mha-purple-light) 50%,
+          var(--mha-purple-dark) 100%
+        );
+      }
+
+      #map {
+        flex: 1;
+        min-height: 460px;
+        background: #e8edf2;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        min-height: 0;
+      }
+
+      .card {
+        background: var(--surface);
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .card-header {
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid var(--border);
+        background: #faf8fc;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+
+      .region-list {
+        max-height: 260px;
+        overflow-y: auto;
+        list-style: none;
+      }
+
+      .region-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.65rem 1rem;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+
+      .region-item:hover,
+      .region-item.active {
+        background: #f3eaf8;
+      }
+      .region-item:last-child {
+        border-bottom: none;
+      }
+
+      .region-name {
+        font-size: 0.82rem;
+        font-weight: 500;
+      }
+      .region-meta {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-top: 0.15rem;
+      }
+      .region-count {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--mha-purple);
+        min-width: 2rem;
+        text-align: right;
+      }
+
+      .facility-detail {
+        padding: 1rem;
+        font-size: 0.82rem;
+        line-height: 1.5;
+        color: var(--text-muted);
+        min-height: 160px;
+      }
+
+      .facility-detail strong {
+        display: block;
+        color: var(--text);
+        font-size: 0.95rem;
+        margin-bottom: 0.35rem;
+      }
+
+      .cadre-row {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        margin-top: 0.4rem;
+        font-size: 0.8rem;
+        color: var(--text);
+      }
+
+      .cadre-row .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .leaflet-tooltip.region-tooltip {
+        background: var(--mha-purple-dark);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 0.55rem 0.75rem;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.78rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      .leaflet-tooltip.region-tooltip::before {
+        border-top-color: var(--mha-purple-dark);
+      }
+
+      .leaflet-tooltip.cadre-tooltip {
+        color: #fff;
+        border: 2px solid #fff;
+        border-radius: 10px;
+        padding: 0.45rem 0.65rem;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.76rem;
+        font-weight: 600;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+      }
+
+      .leaflet-tooltip.cadre-tooltip::before {
+        display: none;
+      }
+
+      .cadre-marker {
+        border: 2.5px solid #fff;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+      }
+
+      footer {
+        text-align: center;
+        padding: 0.6rem;
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        border-top: 1px solid var(--border);
+        background: var(--surface);
+      }
+
+      @media (max-width: 1100px) {
+        .kpi-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        main {
+          grid-template-columns: 1fr;
+        }
+        nav {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img
+        src="assets/mha-logo.png"
+        alt="Mental Health Authority of Ghana logo"
+      />
+      <div class="header-text">
+        <h1>Mental Health Workforce Distribution</h1>
+        <p>
+          Mental Health Authority of Ghana &middot; Psychiatrists, Psychologists
+          &amp; Mental Health Nurses &middot; 2026
+        </p>
+      </div>
+      <nav>
+        <a href="/" class="active">Dashboard</a>
+        <a href="/portal">Data Portal</a>
+      </nav>
+    </header>
+
+    <section class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-label">Total Workforce</div>
+        <div class="kpi-value total" id="kpi-total">—</div>
+        <div class="kpi-sub">All cadres nationally</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Psychiatrists</div>
+        <div class="kpi-value psychiatrists" id="kpi-psychiatrists">—</div>
+        <div class="kpi-sub">Concentrated in Greater Accra</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Psychologists</div>
+        <div class="kpi-value psychologists" id="kpi-psychologists">—</div>
+        <div class="kpi-sub">From facility mapping data</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Mental Health Nurses</div>
+        <div class="kpi-value nurses" id="kpi-nurses">—</div>
+        <div class="kpi-sub">Predominantly rural placements</div>
+      </div>
+    </section>
+
+    <main>
+      <div class="map-panel">
+        <div class="map-toolbar">
+          <h2>National Workforce Map</h2>
+          <div class="toolbar-right">
+            <div class="cadre-filters" id="cadre-filters"></div>
+            <div class="legend">
+              <span>Low</span>
+              <div class="legend-bar"></div>
+              <span>High</span>
+            </div>
+          </div>
+        </div>
+        <div id="map"></div>
+      </div>
+
+      <aside class="sidebar">
+        <div class="card">
+          <div class="card-header">Workforce by Region</div>
+          <ul class="region-list" id="region-list"></ul>
+        </div>
+        <div class="card">
+          <div class="card-header">Placement Details</div>
+          <div class="facility-detail" id="facility-detail">
+            Hover over a region or coloured marker to view worker type and
+            facility details.
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>MHA workforce mapping 2026 &middot;</footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      const REGION_ALIASES = {
+        Savanna: "Savannah Region",
+        "Upper West": "Upper West Region",
+        Northern: "Northern Region",
+        Bono: "Bono Region",
+        "Bono East": "Bono East Region",
+        Ashanti: "Ashanti Region",
+        "Western North": "Western North Region",
+        Western: "Western Region",
+        Central: "Central Region",
+        "Greater Accra": "Greater Accra Region",
+        Eastern: "Eastern Region",
+        Volta: "Volta Region",
+      };
+
+      const CADRE_OFFSETS = {
+        psychiatrists: [-7, -7],
+        psychologists: [7, -7],
+        nurses: [0, 9],
+      };
+
+      let activeCadres = new Set(["psychiatrists", "psychologists", "nurses"]);
+      let markerLayers = [];
+      let regionLayers = {};
+      let resetRegionStyles = () => {};
+      let data = null;
+
+      function normalizeRegion(name) {
+        return (
+          REGION_ALIASES[name] ||
+          (name.includes("Region") ? name : name + " Region")
+        );
+      }
+
+      function facilityTotal(f, cadres = activeCadres) {
+        return [...cadres].reduce((s, c) => s + (f[c] || 0), 0);
+      }
+
+      function colorForWorkers(count, max) {
+        if (!count) return "#ede4f3";
+        const t = Math.min(count / max, 1);
+        return `rgb(${Math.round(237 - t * 130)},${Math.round(228 - t * 170)},${Math.round(243 - t * 60)})`;
+      }
+
+      function markerRadius(count) {
+        return Math.max(8, 6 + count * 2.2);
+      }
+
+      function cadreRows(f, cadres = activeCadres) {
+        return data.cadres
+          .filter((c) => cadres.has(c.id) && f[c.id] > 0)
+          .map(
+            (c) =>
+              `<div class="cadre-row"><span class="dot" style="background:${c.color}"></span>${f[c.id]} ${c.label}</div>`,
+          )
+          .join("");
+      }
+
+      function setPlacementDetail(f, cadre) {
+        const el = document.getElementById("facility-detail");
+        if (!f) {
+          el.innerHTML =
+            "Hover over a region or coloured marker to view worker type and facility details.";
+          return;
+        }
+        const cadreInfo = data.cadres.find((c) => c.id === cadre);
+        const highlight = cadreInfo
+          ? `<div class="cadre-row" style="margin-top:0.6rem;font-weight:700"><span class="dot" style="background:${cadreInfo.color}"></span>${f[cadre]} ${cadreInfo.label}</div>`
+          : "";
+        el.innerHTML = `
+        <strong>${f.facility}</strong>
+        ${f.district ? f.district + (f.subDistrict ? " · " + f.subDistrict : "") : ""}<br>
+        <em>${f.region}</em>
+        ${highlight}
+        <div style="margin-top:0.65rem;font-size:0.75rem;color:var(--text-muted)">All cadres at this facility:</div>
+        ${cadreRows(f, new Set(["psychiatrists", "psychologists", "nurses"]))}
+      `;
+      }
+
+      function setRegionDetail(regionName, facilities, totals) {
+        const el = document.getElementById("facility-detail");
+        const breakdown = data.cadres
+          .filter((c) => activeCadres.has(c.id))
+          .map(
+            (c) =>
+              `<div class="cadre-row"><span class="dot" style="background:${c.color}"></span>${totals[c.id] || 0} ${c.label}</div>`,
+          )
+          .join("");
+        const list = facilities
+          .filter((f) => facilityTotal(f) > 0)
+          .map((f) => {
+            const parts = data.cadres
+              .filter((c) => f[c.id] > 0)
+              .map((c) => `${f[c.id]} ${c.label.split(" ")[0]}`)
+              .join(", ");
+            return `<li>${f.facility} — ${parts}</li>`;
+          })
+          .join("");
+        el.innerHTML = `
+        <strong>${regionName}</strong>
+        <div style="margin-top:0.4rem">${breakdown}</div>
+        <div style="margin-top:0.55rem;font-weight:700;color:var(--text)">${totals.all} total workers · ${facilities.length} facilities</div>
+        <ul style="margin-top:0.5rem;padding-left:1.1rem;font-size:0.75rem;color:var(--text)">${list}</ul>
+      `;
+      }
+
+      function regionTotals(facilities) {
+        const totals = {
+          psychiatrists: 0,
+          psychologists: 0,
+          nurses: 0,
+          all: 0,
+        };
+        facilities.forEach((f) => {
+          data.cadres.forEach((c) => {
+            if (activeCadres.has(c.id)) totals[c.id] += f[c.id] || 0;
+          });
+        });
+        totals.all =
+          totals.psychiatrists + totals.psychologists + totals.nurses;
+        return totals;
+      }
+
+      function rebuildMarkers(map) {
+        markerLayers.forEach((m) => map.removeLayer(m));
+        markerLayers = [];
+
+        data.facilities.forEach((f) => {
+          if (f.lat == null || f.lng == null) return;
+
+          data.cadres.forEach((cadre) => {
+            if (!activeCadres.has(cadre.id)) return;
+            const count = f[cadre.id] || 0;
+            if (!count) return;
+
+            const size = markerRadius(count);
+            const [ox, oy] = CADRE_OFFSETS[cadre.id] || [0, 0];
+            const icon = L.divIcon({
+              className: "",
+              html: `<div class="cadre-marker" style="width:${size}px;height:${size}px;background:${cadre.color}"></div>`,
+              iconSize: [size, size],
+              iconAnchor: [size / 2 - ox, size / 2 - oy],
+            });
+
+            const marker = L.marker([f.lat, f.lng], {
+              icon,
+              zIndexOffset: cadre.id === "psychiatrists" ? 600 : 500,
+            })
+              .addTo(map)
+              .bindTooltip(
+                `<strong>${cadre.label}</strong><br>${f.facility}<br>${count} worker${count !== 1 ? "s" : ""}`,
+                {
+                  className: "cadre-tooltip",
+                  direction: "top",
+                  offset: [ox, oy - 10],
+                  opacity: 0.95,
+                },
+              );
+
+            marker.getTooltip().getElement()?.style &&
+              (marker.getTooltip().getElement().style.background = cadre.color);
+
+            marker.on("mouseover", () => setPlacementDetail(f, cadre.id));
+            marker.on("mouseout", () => setPlacementDetail(null));
+            markerLayers.push(marker);
+          });
+        });
+      }
+
+      function updateRegionStyles() {
+        const byRegion = {};
+        data.facilities.forEach((f) => {
+          const key = normalizeRegion(f.region);
+          if (!byRegion[key]) byRegion[key] = [];
+          byRegion[key].push(f);
+        });
+
+        const totalsByRegion = Object.fromEntries(
+          Object.entries(byRegion).map(([k, v]) => [k, regionTotals(v)]),
+        );
+        const maxWorkers = Math.max(
+          ...Object.values(totalsByRegion).map((t) => t.all),
+          1,
+        );
+
+        Object.entries(regionLayers).forEach(([name, layer]) => {
+          const total = totalsByRegion[name]?.all || 0;
+          layer.setStyle({
+            fillColor: colorForWorkers(total, maxWorkers),
+            weight: 1.5,
+            opacity: 1,
+            color: "#fff",
+            fillOpacity: total ? 0.72 : 0.35,
+          });
+
+          const t = totalsByRegion[name] || {
+            psychiatrists: 0,
+            psychologists: 0,
+            nurses: 0,
+            all: 0,
+          };
+          const facs = byRegion[name] || [];
+          const tip = [
+            `<strong>${name}</strong>`,
+            `${t.all} total workers`,
+            activeCadres.has("psychiatrists")
+              ? `${t.psychiatrists} psychiatrists`
+              : null,
+            activeCadres.has("psychologists")
+              ? `${t.psychologists} psychologists`
+              : null,
+            activeCadres.has("nurses") ? `${t.nurses} nurses` : null,
+            `${facs.length} facilit${facs.length !== 1 ? "ies" : "y"}`,
+          ]
+            .filter(Boolean)
+            .join("<br>");
+          layer.setTooltipContent(tip);
+        });
+
+        return { byRegion, totalsByRegion, maxWorkers };
+      }
+
+      async function init() {
+        const [workforce, geojson] = await Promise.all([
+          fetch("data/workforce.json").then((r) => r.json()),
+          fetch("data/ghana-regions.geojson").then((r) => r.json()),
+        ]);
+        data = workforce;
+        const { facilities, cadres, meta } = workforce;
+
+        document.getElementById("kpi-total").textContent = meta.totals.all;
+        document.getElementById("kpi-psychiatrists").textContent =
+          meta.totals.psychiatrists;
+        document.getElementById("kpi-psychologists").textContent =
+          meta.totals.psychologists;
+        document.getElementById("kpi-nurses").textContent = meta.totals.nurses;
+
+        const filterEl = document.getElementById("cadre-filters");
+        cadres.forEach((c) => {
+          const btn = document.createElement("button");
+          btn.className = "cadre-btn active";
+          btn.dataset.cadre = c.id;
+          btn.innerHTML = `<span class="dot" style="background:${c.color}"></span>${c.label}`;
+          btn.addEventListener("click", () => {
+            if (activeCadres.has(c.id)) {
+              if (activeCadres.size === 1) return;
+              activeCadres.delete(c.id);
+              btn.classList.remove("active");
+            } else {
+              activeCadres.add(c.id);
+              btn.classList.add("active");
+            }
+            rebuildMarkers(map);
+            const info = updateRegionStyles();
+            rebuildRegionList(info.byRegion, info.totalsByRegion);
+          });
+          filterEl.appendChild(btn);
+        });
+
+        const byRegion = {};
+        facilities.forEach((f) => {
+          const key = normalizeRegion(f.region);
+          if (!byRegion[key]) byRegion[key] = [];
+          byRegion[key].push(f);
+        });
+
+        let totalsByRegion = Object.fromEntries(
+          Object.entries(byRegion).map(([k, v]) => [k, regionTotals(v)]),
+        );
+
+        function rebuildRegionList(
+          regions = byRegion,
+          totals = totalsByRegion,
+        ) {
+          const list = document.getElementById("region-list");
+          list.innerHTML = "";
+          Object.entries(totals)
+            .sort((a, b) => b[1].all - a[1].all)
+            .forEach(([name, t]) => {
+              const li = document.createElement("li");
+              li.className = "region-item";
+              const metaParts = cadres
+                .filter((c) => activeCadres.has(c.id) && t[c.id])
+                .map((c) => `${t[c.id]} ${c.label.split(" ")[0].toLowerCase()}`)
+                .join(" · ");
+              li.innerHTML = `
+              <div>
+                <div class="region-name">${name.replace(" Region", "")}</div>
+                <div class="region-meta">${metaParts || "—"}</div>
+              </div>
+              <div class="region-count">${t.all}</div>
+            `;
+              li.addEventListener("mouseenter", () => {
+                document
+                  .querySelectorAll(".region-item")
+                  .forEach((e) => e.classList.remove("active"));
+                li.classList.add("active");
+                setRegionDetail(name, regions[name], t);
+                const layer = regionLayers[name];
+                if (layer) {
+                  layer.setStyle({
+                    weight: 3,
+                    color: "#6b2d8e",
+                    fillOpacity: 0.88,
+                  });
+                  layer.bringToFront();
+                }
+              });
+              li.addEventListener("mouseleave", () => {
+                li.classList.remove("active");
+                resetRegionStyles();
+              });
+              list.appendChild(li);
+            });
+        }
+
+        rebuildRegionList();
+
+        const map = L.map("map", {
+          zoomControl: true,
+          scrollWheelZoom: true,
+        }).setView([7.95, -1.02], 7);
+
+        L.tileLayer(
+          "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+          {
+            attribution: "&copy; OSM &copy; CARTO",
+            subdomains: "abcd",
+            maxZoom: 19,
+          },
+        ).addTo(map);
+
+        const maxWorkers = Math.max(
+          ...Object.values(totalsByRegion).map((t) => t.all),
+          1,
+        );
+
+        resetRegionStyles = () => updateRegionStyles();
+
+        L.geoJSON(geojson, {
+          style(feature) {
+            const name = feature.properties.shapeName;
+            const total = totalsByRegion[name]?.all || 0;
+            return {
+              fillColor: colorForWorkers(total, maxWorkers),
+              weight: 1.5,
+              opacity: 1,
+              color: "#ffffff",
+              fillOpacity: total ? 0.72 : 0.35,
+            };
+          },
+          onEachFeature(feature, layer) {
+            const name = feature.properties.shapeName;
+            regionLayers[name] = layer;
+            const t = totalsByRegion[name] || {
+              all: 0,
+              psychiatrists: 0,
+              psychologists: 0,
+              nurses: 0,
+            };
+            const facs = byRegion[name] || [];
+
+            layer.bindTooltip("", {
+              sticky: true,
+              className: "region-tooltip",
+              direction: "top",
+            });
+
+            layer.on("mouseover", () => {
+              layer.setStyle({
+                weight: 3,
+                color: "#6b2d8e",
+                fillOpacity: 0.88,
+              });
+              layer.bringToFront();
+              if (facs.length) setRegionDetail(name, facs, t);
+            });
+            layer.on("mouseout", resetRegionStyles);
+          },
+        }).addTo(map);
+
+        updateRegionStyles();
+        rebuildMarkers(map);
+
+        map.fitBounds(L.geoJSON(geojson).getBounds(), { padding: [24, 24] });
+
+        map.on("tooltipopen", (e) => {
+          const el = e.tooltip.getElement();
+          if (el?.classList.contains("cadre-tooltip")) {
+            const bg =
+              e.tooltip._source?.options?.icon?.options?.html?.match(
+                /background:([^"]+)/,
+              )?.[1];
+            if (bg) el.style.background = bg;
+          }
+        });
+      }
+
+      init().catch((err) => {
+        console.error(err);
+        document.getElementById("facility-detail").textContent =
+          "Could not load dashboard data. Please run from a local web server.";
+      });
+    </script>
+  </body>
+</html>
