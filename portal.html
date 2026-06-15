@@ -580,7 +580,10 @@
 
         els.latInput.value = Number(result.lat).toFixed(6);
         els.lngInput.value = Number(result.lng).toFixed(6);
-        setGeocodeStatus(`Location found: ${result.displayName}`, "ok");
+        const label = result.approximate
+          ? `Approximate location: ${result.displayName.replace(/^Approximate location near /, "")}`
+          : result.displayName;
+        setGeocodeStatus(label, "ok");
         return { lat: result.lat, lng: result.lng };
       } catch (err) {
         if (requestId !== geocodeRequestId) return null;
