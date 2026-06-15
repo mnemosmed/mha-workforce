@@ -223,6 +223,36 @@
       border-radius: 8px;
     }
 
+    .field input.readonly {
+      background: #f5f2f8;
+      color: var(--text-muted);
+      cursor: default;
+    }
+
+    .geocode-status {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      min-height: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .geocode-status.ok { color: var(--mha-green); }
+    .geocode-status.error { color: var(--danger); }
+    .geocode-status.loading { color: var(--mha-purple); }
+
+    .geocode-status .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--border);
+      border-top-color: var(--mha-purple);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 
     .modal-footer {
@@ -346,12 +376,15 @@
         <div class="field-row">
           <div class="field">
             <label for="f-lat">Latitude</label>
-            <input id="f-lat" type="number" step="any" />
+            <input id="f-lat" type="text" readonly class="readonly" placeholder="Auto-detected" />
           </div>
           <div class="field">
             <label for="f-lng">Longitude</label>
-            <input id="f-lng" type="number" step="any" />
+            <input id="f-lng" type="text" readonly class="readonly" placeholder="Auto-detected" />
           </div>
+        </div>
+        <div class="geocode-status" id="geocode-status">
+          Coordinates are detected automatically from the facility name and location.
         </div>
         <div class="field-row">
           <div class="field">
@@ -387,6 +420,8 @@
     let data = null;
     let dirty = false;
     let editIndex = null;
+    let geocodeTimer = null;
+    let geocodeRequestId = 0;
 
     const els = {
       table: document.getElementById("table-body"),
@@ -398,6 +433,14 @@
       updated: document.getElementById("updated-at"),
       modal: document.getElementById("modal"),
       toast: document.getElementById("toast"),
+      geocodeStatus: document.getElementById("geocode-status"),
+      facilityInput: document.getElementById("f-facility"),
+      regionInput: document.getElementById("f-region"),
+      districtInput: document.getElementById("f-district"),
+      subInput: document.getElementById("f-sub"),
+      latInput: document.getElementById("f-lat"),
+      lngInput: document.getElementById("f-lng"),
+      confirmBtn: document.getElementById("btn-confirm"),
     };
 
     function totals() {
@@ -488,8 +531,72 @@
       });
     }
 
+    function setGeocodeStatus(message, state = "") {
+      els.geocodeStatus.className = "geocode-status" + (state ? " " + state : "");
+      els.geocodeStatus.innerHTML = state === "loading"
+        ? `<span class="spinner"></span>${message}`
+        : message;
+    }
+
+    function geocodeQueryParams() {
+      return {
+        facility: els.facilityInput.value.trim(),
+        region: els.regionInput.value.trim(),
+        district: els.districtInput.value.trim(),
+        subDistrict: els.subInput.value.trim(),
+      };
+    }
+
+    function scheduleGeocode() {
+      clearTimeout(geocodeTimer);
+      geocodeTimer = setTimeout(() => lookupCoordinates(false), 700);
+    }
+
+    async function lookupCoordinates(force = false) {
+      const { facility, region, district, subDistrict } = geocodeQueryParams();
+      if (!facility) {
+        els.latInput.value = "";
+        els.lngInput.value = "";
+        setGeocodeStatus("Enter a facility name to detect coordinates.");
+        return null;
+      }
+
+      const requestId = ++geocodeRequestId;
+      setGeocodeStatus("Looking up location…", "loading");
+      els.confirmBtn.disabled = true;
+
+      const params = new URLSearchParams({ facility, region, district, subDistrict });
+      try {
+        const res = await fetch(`/api/geocode?${params}`, { credentials: "same-origin" });
+        const result = await res.json();
+        if (requestId !== geocodeRequestId) return null;
+
+        if (!res.ok || !result.ok) {
+          els.latInput.value = "";
+          els.lngInput.value = "";
+          setGeocodeStatus(result.error || "Could not find this location.", "error");
+          return null;
+        }
+
+        els.latInput.value = Number(result.lat).toFixed(6);
+        els.lngInput.value = Number(result.lng).toFixed(6);
+        setGeocodeStatus(`Location found: ${result.displayName}`, "ok");
+        return { lat: result.lat, lng: result.lng };
+      } catch (err) {
+        if (requestId !== geocodeRequestId) return null;
+        setGeocodeStatus("Geocoding service unavailable.", "error");
+        return null;
+      } finally {
+        if (requestId === geocodeRequestId) {
+          els.confirmBtn.disabled = false;
+        }
+      }
+    }
+
     function openModal(index = null) {
       editIndex = index;
+      geocodeRequestId += 1;
+      clearTimeout(geocodeTimer);
       document.getElementById("modal-title").textContent =
         index === null ? "Add facility" : "Edit facility";
 
@@ -497,17 +604,27 @@
         ? { facility: "", region: "Greater Accra", district: "", subDistrict: "", lat: "", lng: "", psychiatrists: 0, psychologists: 0, nurses: 0 }
         : data.facilities[index];
 
-      document.getElementById("f-facility").value = f.facility || "";
-      document.getElementById("f-region").value = f.region || "Greater Accra";
-      document.getElementById("f-district").value = f.district || "";
-      document.getElementById("f-sub").value = f.subDistrict || "";
-      document.getElementById("f-lat").value = f.lat ?? "";
-      document.getElementById("f-lng").value = f.lng ?? "";
+      els.facilityInput.value = f.facility || "";
+      els.regionInput.value = f.region || "Greater Accra";
+      els.districtInput.value = f.district || "";
+      els.subInput.value = f.subDistrict || "";
+      els.latInput.value = f.lat != null ? Number(f.lat).toFixed(6) : "";
+      els.lngInput.value = f.lng != null ? Number(f.lng).toFixed(6) : "";
       document.getElementById("f-psychiatrists").value = f.psychiatrists || 0;
       document.getElementById("f-psychologists").value = f.psychologists || 0;
       document.getElementById("f-nurses").value = f.nurses || 0;
 
+      if (f.lat != null && f.lng != null) {
+        setGeocodeStatus("Existing coordinates loaded. Update the name or location to refresh.");
+      } else {
+        setGeocodeStatus("Coordinates are detected automatically from the facility name and location.");
+      }
+
       els.modal.classList.add("open");
+
+      if (!f.lat && f.facility) {
+        scheduleGeocode();
+      }
     }
 
     function closeModal() {
@@ -516,13 +633,13 @@
     }
 
     function readForm() {
-      const lat = document.getElementById("f-lat").value;
-      const lng = document.getElementById("f-lng").value;
+      const lat = els.latInput.value;
+      const lng = els.lngInput.value;
       return {
-        facility: document.getElementById("f-facility").value.trim(),
-        region: document.getElementById("f-region").value,
-        district: document.getElementById("f-district").value.trim(),
-        subDistrict: document.getElementById("f-sub").value.trim(),
+        facility: els.facilityInput.value.trim(),
+        region: els.regionInput.value,
+        district: els.districtInput.value.trim(),
+        subDistrict: els.subInput.value.trim(),
         lat: lat === "" ? null : parseFloat(lat),
         lng: lng === "" ? null : parseFloat(lng),
         psychiatrists: parseInt(document.getElementById("f-psychiatrists").value, 10) || 0,
@@ -531,12 +648,22 @@
       };
     }
 
-    function confirmFacility() {
-      const f = readForm();
+    async function confirmFacility() {
+      let f = readForm();
       if (!f.facility) {
         toast("Facility name is required", true);
         return;
       }
+
+      if (f.lat == null || f.lng == null) {
+        const coords = await lookupCoordinates(true);
+        if (!coords) {
+          toast("Could not detect coordinates. Check the facility name and region.", true);
+          return;
+        }
+        f = { ...f, ...coords };
+      }
+
       if (editIndex === null) data.facilities.push(f);
       else data.facilities[editIndex] = f;
 
@@ -600,6 +727,11 @@
     document.getElementById("btn-cancel").addEventListener("click", closeModal);
     document.getElementById("btn-confirm").addEventListener("click", confirmFacility);
     els.modal.addEventListener("click", e => { if (e.target === els.modal) closeModal(); });
+
+    els.facilityInput.addEventListener("input", scheduleGeocode);
+    els.regionInput.addEventListener("change", scheduleGeocode);
+    els.districtInput.addEventListener("input", scheduleGeocode);
+    els.subInput.addEventListener("input", scheduleGeocode);
 
     window.addEventListener("beforeunload", e => {
       if (dirty) { e.preventDefault(); e.returnValue = ""; }

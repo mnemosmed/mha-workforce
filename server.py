@@ -1,6 +1,8 @@
 """MHA Workforce Dashboard — static files + workforce API."""
 import json
 import os
+import urllib.parse
+import urllib.request
 from datetime import datetime, timezone
 from functools import wraps
 
@@ -101,6 +103,62 @@ def put_workforce():
         return jsonify({"ok": False, "error": str(exc)}), 400
     except OSError as exc:
         return jsonify({"ok": False, "error": str(exc)}), 500
+
+
+@app.get("/api/geocode")
+@require_portal_auth
+def geocode():
+    facility = request.args.get("facility", "").strip()
+    if not facility:
+        return jsonify({"ok": False, "error": "Facility name is required"}), 400
+
+    region = request.args.get("region", "").strip()
+    district = request.args.get("district", "").strip()
+    sub_district = request.args.get("subDistrict", "").strip()
+
+    parts = [facility]
+    if sub_district:
+        parts.append(sub_district)
+    if district:
+        parts.append(district)
+    if region:
+        parts.append(region)
+    parts.append("Ghana")
+    query = ", ".join(parts)
+
+    params = urllib.parse.urlencode(
+        {
+            "q": query,
+            "format": "json",
+            "limit": 1,
+            "countrycodes": "gh",
+        }
+    )
+    url = f"https://nominatim.openstreetmap.org/search?{params}"
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "MHA-Workforce-Dashboard/1.0 (mental health authority ghana)"},
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            results = json.loads(resp.read().decode("utf-8"))
+    except Exception as exc:
+        return jsonify({"ok": False, "error": f"Geocoding failed: {exc}"}), 502
+
+    if not results:
+        return jsonify({"ok": False, "error": "No location found for this facility"}), 404
+
+    hit = results[0]
+    return jsonify(
+        {
+            "ok": True,
+            "lat": float(hit["lat"]),
+            "lng": float(hit["lon"]),
+            "displayName": hit.get("display_name", query),
+            "query": query,
+        }
+    )
 
 
 @app.get("/")
