@@ -52,23 +52,24 @@
           #7a3a9e 100%
         );
         color: #fff;
-        padding: 1rem 1.75rem;
+        padding: 0.65rem 1.25rem;
         display: flex;
         align-items: center;
-        gap: 1.25rem;
+        gap: 1rem;
         box-shadow: 0 2px 16px rgba(79, 31, 106, 0.25);
         z-index: 1000;
+        flex-shrink: 0;
       }
 
       header img {
-        width: 72px;
-        height: 72px;
+        width: 52px;
+        height: 52px;
         object-fit: contain;
         filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
       }
 
       .header-text h1 {
-        font-size: 1.35rem;
+        font-size: 1.15rem;
         font-weight: 700;
         letter-spacing: -0.02em;
         line-height: 1.2;
@@ -80,34 +81,33 @@
         margin-top: 0.2rem;
       }
 
-      .kpi-row {
+      .kpi-stack {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-        padding: 1rem 1.75rem 0;
-        flex-shrink: 0;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.55rem;
       }
 
       .kpi {
         background: var(--surface);
-        border-radius: 12px;
-        padding: 1rem 1.15rem;
+        border-radius: 10px;
+        padding: 0.65rem 0.75rem;
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
       }
 
       .kpi-label {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
         color: var(--text-muted);
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.05em;
         font-weight: 600;
+        line-height: 1.2;
       }
 
       .kpi-value {
-        font-size: 1.85rem;
+        font-size: 1.35rem;
         font-weight: 700;
-        margin-top: 0.15rem;
+        margin-top: 0.1rem;
         line-height: 1.1;
       }
 
@@ -125,9 +125,7 @@
       }
 
       .kpi-sub {
-        font-size: 0.78rem;
-        color: var(--text-muted);
-        margin-top: 0.2rem;
+        display: none;
       }
 
       main {
@@ -141,9 +139,8 @@
       }
 
       .map-panel {
-        background: var(--surface);
+        background: var(--bg);
         border: none;
-        border-right: 1px solid var(--border);
         box-shadow: none;
         overflow: hidden;
         display: flex;
@@ -152,49 +149,28 @@
         height: 100%;
       }
 
-      .map-toolbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid var(--border);
-        background: #faf8fc;
-      }
-
-      .map-toolbar h2 {
-        font-size: 0.95rem;
-        font-weight: 600;
-      }
-
-      .toolbar-right {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-
       .cadre-filters {
         display: flex;
-        gap: 0.4rem;
-        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 0.35rem;
       }
 
       .cadre-btn {
-        display: inline-flex;
+        display: flex;
         align-items: center;
-        gap: 0.35rem;
-        border: 1.5px solid var(--border);
+        gap: 0.45rem;
+        border: 1px solid var(--border);
         background: #fff;
-        border-radius: 999px;
-        padding: 0.3rem 0.65rem;
-        font-size: 0.72rem;
+        border-radius: 8px;
+        padding: 0.4rem 0.55rem;
+        font-size: 0.75rem;
         font-weight: 600;
         cursor: pointer;
         font-family: inherit;
         color: var(--text-muted);
         transition: all 0.15s;
+        width: 100%;
+        text-align: left;
       }
 
       .cadre-btn .dot {
@@ -215,14 +191,24 @@
 
       .legend {
         display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        flex-direction: column;
+        gap: 0.35rem;
         font-size: 0.72rem;
         color: var(--text-muted);
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .legend-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
       }
 
       .legend-bar {
-        width: 90px;
+        flex: 1;
         height: 8px;
         border-radius: 4px;
         background: linear-gradient(
@@ -245,14 +231,22 @@
         font-family: "DM Sans", system-ui, sans-serif;
       }
 
+      .leaflet-top.leaflet-left {
+        top: auto;
+        left: auto;
+        right: 12px;
+        bottom: 12px;
+      }
+
       .sidebar {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.65rem;
         min-height: 0;
-        padding: 1rem;
+        padding: 0.65rem;
         overflow-y: auto;
         background: var(--bg);
+        border-left: 1px solid var(--border);
       }
 
       .card {
@@ -272,7 +266,7 @@
       }
 
       .region-list {
-        max-height: 260px;
+        max-height: 200px;
         overflow-y: auto;
         list-style: none;
       }
@@ -313,11 +307,11 @@
       }
 
       .facility-detail {
-        padding: 1rem;
-        font-size: 0.82rem;
-        line-height: 1.5;
+        padding: 0.85rem;
+        font-size: 0.8rem;
+        line-height: 1.45;
         color: var(--text-muted);
-        min-height: 160px;
+        min-height: 100px;
       }
 
       .facility-detail strong {
@@ -380,26 +374,21 @@
       }
 
       footer {
-        text-align: center;
-        padding: 0.6rem;
-        font-size: 0.72rem;
-        color: var(--text-muted);
-        border-top: 1px solid var(--border);
-        background: var(--surface);
+        display: none;
       }
 
       @media (max-width: 1100px) {
-        .kpi-row {
-          grid-template-columns: repeat(2, 1fr);
-        }
         main {
           grid-template-columns: 1fr;
-          grid-template-rows: minmax(420px, 55vh) auto;
+          grid-template-rows: minmax(50vh, 1fr) auto;
           overflow: auto;
         }
-        .map-panel {
-          border-right: none;
-          border-bottom: 1px solid var(--border);
+        .sidebar {
+          border-left: none;
+          border-top: 1px solid var(--border);
+        }
+        .kpi-stack {
+          grid-template-columns: repeat(4, 1fr);
         }
       }
     </style>
@@ -419,46 +408,46 @@
       </div>
     </header>
 
-    <section class="kpi-row">
-      <div class="kpi">
-        <div class="kpi-label">Total Workforce</div>
-        <div class="kpi-value total" id="kpi-total">—</div>
-        <div class="kpi-sub">All cadres nationally</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Psychiatrists</div>
-        <div class="kpi-value psychiatrists" id="kpi-psychiatrists">—</div>
-        <div class="kpi-sub">Concentrated in Greater Accra</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Psychologists</div>
-        <div class="kpi-value psychologists" id="kpi-psychologists">—</div>
-        <div class="kpi-sub">From facility mapping data</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Mental Health Nurses</div>
-        <div class="kpi-value nurses" id="kpi-nurses">—</div>
-        <div class="kpi-sub">Predominantly rural placements</div>
-      </div>
-    </section>
-
     <main>
       <div class="map-panel">
-        <div class="map-toolbar">
-          <h2>National Workforce Map</h2>
-          <div class="toolbar-right">
-            <div class="cadre-filters" id="cadre-filters"></div>
-            <div class="legend">
-              <span>Low</span>
-              <div class="legend-bar"></div>
-              <span>High</span>
-            </div>
-          </div>
-        </div>
         <div id="map"></div>
       </div>
 
       <aside class="sidebar">
+        <div class="kpi-stack">
+          <div class="kpi">
+            <div class="kpi-label">Total Workforce</div>
+            <div class="kpi-value total" id="kpi-total">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Psychiatrists</div>
+            <div class="kpi-value psychiatrists" id="kpi-psychiatrists">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Psychologists</div>
+            <div class="kpi-value psychologists" id="kpi-psychologists">—</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">MH Nurses</div>
+            <div class="kpi-value nurses" id="kpi-nurses">—</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Map Key</div>
+          <div style="padding: 0.75rem">
+            <div class="cadre-filters" id="cadre-filters"></div>
+            <div class="legend">
+              <div class="legend-row">
+                <span>Low</span>
+                <div class="legend-bar"></div>
+                <span>High</span>
+              </div>
+              <span style="font-size:0.68rem">Region shading by workforce density</span>
+            </div>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-header">Workforce by Region</div>
           <ul class="region-list" id="region-list"></ul>
@@ -867,15 +856,16 @@
         updateRegionStyles();
         rebuildMarkers(map);
 
-        map.fitBounds(ghanaBounds, { padding: [8, 8] });
-        map.setMinZoom(map.getZoom());
+        function fitGhanaMap() {
+          map.invalidateSize();
+          map.fitBounds(ghanaBounds.pad(-0.15));
+          map.setMinZoom(map.getZoom());
+        }
+
+        fitGhanaMap();
 
         window.addEventListener("resize", () => {
-          map.invalidateSize();
-          map.fitBounds(ghanaBounds, { padding: [8, 8] });
-          if (map.getZoom() < map.getMinZoom()) {
-            map.setZoom(map.getMinZoom());
-          }
+          fitGhanaMap();
         });
 
         map.on("tooltipopen", (e) => {
