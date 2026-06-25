@@ -85,6 +85,7 @@
         grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
         padding: 1rem 1.75rem 0;
+        flex-shrink: 0;
       }
 
       .kpi {
@@ -132,21 +133,23 @@
       main {
         flex: 1;
         display: grid;
-        grid-template-columns: 1fr 340px;
-        gap: 1rem;
-        padding: 1rem 1.75rem 1.75rem;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 0;
+        padding: 0;
         min-height: 0;
+        overflow: hidden;
       }
 
       .map-panel {
         background: var(--surface);
-        border-radius: 16px;
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
+        border: none;
+        border-right: 1px solid var(--border);
+        box-shadow: none;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        min-height: 520px;
+        min-height: 0;
+        height: 100%;
       }
 
       .map-toolbar {
@@ -232,7 +235,8 @@
 
       #map {
         flex: 1;
-        min-height: 460px;
+        width: 100%;
+        min-height: 0;
         background: #e8edf2;
       }
 
@@ -241,6 +245,9 @@
         flex-direction: column;
         gap: 1rem;
         min-height: 0;
+        padding: 1rem;
+        overflow-y: auto;
+        background: var(--bg);
       }
 
       .card {
@@ -382,6 +389,12 @@
         }
         main {
           grid-template-columns: 1fr;
+          grid-template-rows: minmax(420px, 55vh) auto;
+          overflow: auto;
+        }
+        .map-panel {
+          border-right: none;
+          border-bottom: 1px solid var(--border);
         }
       }
     </style>
@@ -777,10 +790,14 @@
 
         rebuildRegionList();
 
+        const ghanaBounds = L.geoJSON(geojson).getBounds();
+
         const map = L.map("map", {
           zoomControl: true,
           scrollWheelZoom: true,
-        }).setView([7.95, -1.02], 7);
+          maxBounds: ghanaBounds.pad(0.06),
+          maxBoundsViscosity: 1.0,
+        });
 
         L.tileLayer(
           "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
@@ -843,7 +860,16 @@
         updateRegionStyles();
         rebuildMarkers(map);
 
-        map.fitBounds(L.geoJSON(geojson).getBounds(), { padding: [24, 24] });
+        map.fitBounds(ghanaBounds, { padding: [8, 8] });
+        map.setMinZoom(map.getZoom());
+
+        window.addEventListener("resize", () => {
+          map.invalidateSize();
+          map.fitBounds(ghanaBounds, { padding: [8, 8] });
+          if (map.getZoom() < map.getMinZoom()) {
+            map.setZoom(map.getMinZoom());
+          }
+        });
 
         map.on("tooltipopen", (e) => {
           const el = e.tooltip.getElement();
