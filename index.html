@@ -858,7 +858,7 @@
 
         function fitGhanaMap() {
           map.invalidateSize();
-          map.fitBounds(ghanaBounds.pad(-0.15));
+          map.fitBounds(ghanaBounds, { padding: [28, 32] });
           map.setMinZoom(map.getZoom());
         }
 
