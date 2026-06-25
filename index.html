@@ -792,6 +792,8 @@
           maxBounds: ghanaBounds.pad(0.02),
           maxBoundsViscosity: 1.0,
           attributionControl: false,
+          zoomSnap: 0.25,
+          zoomDelta: 0.25,
         });
 
         const maxWorkers = Math.max(
@@ -859,7 +861,9 @@
         function fitGhanaMap() {
           map.invalidateSize();
           map.fitBounds(ghanaBounds, { padding: [28, 32] });
-          map.setMinZoom(map.getZoom());
+          const baseZoom = map.getZoom();
+          map.setZoom(baseZoom + 0.25);
+          map.setMinZoom(baseZoom);
         }
 
         fitGhanaMap();
