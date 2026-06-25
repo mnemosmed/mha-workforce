@@ -237,7 +237,12 @@
         flex: 1;
         width: 100%;
         min-height: 0;
-        background: #e8edf2;
+        background: var(--bg);
+      }
+
+      .leaflet-container {
+        background: var(--bg);
+        font-family: "DM Sans", system-ui, sans-serif;
       }
 
       .sidebar {
@@ -664,7 +669,7 @@
             weight: 1.5,
             opacity: 1,
             color: "#fff",
-            fillOpacity: total ? 0.72 : 0.35,
+            fillOpacity: total ? 0.88 : 0.55,
           });
 
           const t = totalsByRegion[name] || {
@@ -795,18 +800,10 @@
         const map = L.map("map", {
           zoomControl: true,
           scrollWheelZoom: true,
-          maxBounds: ghanaBounds.pad(0.06),
+          maxBounds: ghanaBounds.pad(0.02),
           maxBoundsViscosity: 1.0,
+          attributionControl: false,
         });
-
-        L.tileLayer(
-          "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-          {
-            attribution: "&copy; OSM &copy; CARTO",
-            subdomains: "abcd",
-            maxZoom: 19,
-          },
-        ).addTo(map);
 
         const maxWorkers = Math.max(
           ...Object.values(totalsByRegion).map((t) => t.all),
@@ -821,10 +818,10 @@
             const total = totalsByRegion[name]?.all || 0;
             return {
               fillColor: colorForWorkers(total, maxWorkers),
-              weight: 1.5,
+              weight: 1.2,
               opacity: 1,
               color: "#ffffff",
-              fillOpacity: total ? 0.72 : 0.35,
+              fillOpacity: total ? 0.88 : 0.55,
             };
           },
           onEachFeature(feature, layer) {
@@ -846,14 +843,24 @@
 
             layer.on("mouseover", () => {
               layer.setStyle({
-                weight: 3,
+                weight: 2.5,
                 color: "#6b2d8e",
-                fillOpacity: 0.88,
+                fillOpacity: 0.95,
               });
               layer.bringToFront();
               if (facs.length) setRegionDetail(name, facs, t);
             });
             layer.on("mouseout", resetRegionStyles);
+          },
+        }).addTo(map);
+
+        L.geoJSON(geojson, {
+          interactive: false,
+          style: {
+            fillOpacity: 0,
+            color: "#4f1f6a",
+            weight: 2.5,
+            opacity: 0.85,
           },
         }).addTo(map);
 
